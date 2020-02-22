@@ -36,7 +36,7 @@ class _MemberPageState extends State<MemberPage> {
         control: new SwiperControl(),
         // viewportFraction: 0.8,  //轮播图总图（多张图片合成一张图片）比例
         // scale: 0.9,   //单个图片放大缩小比例
-        // layout: SwiperLayout.STACK, //轮播布局方式
+        layout: SwiperLayout.STACK, //轮播布局方式
         controller: SwiperController(
         ),
       ),

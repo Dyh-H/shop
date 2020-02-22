@@ -25,6 +25,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   dio: ^3.0.8  #网络请求库
   flutter_swiper: ^1.1.6  #轮播图
+  flutter_screenutil: ^1.0.2  #屏幕适配
+  url_launcher: ^5.4.2   #调用外部的一些应用
 
 dev_dependencies:
   flutter_test:
