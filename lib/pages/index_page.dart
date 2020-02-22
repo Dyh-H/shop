@@ -10,6 +10,7 @@ class IndexPage extends StatefulWidget {
 
 class _IndexPageState extends State<IndexPage> {
   int currentIndex=0; //此参数必须放在build方法外
+  final _pageController=new PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +28,7 @@ class _IndexPageState extends State<IndexPage> {
           // onTap:ontap,
           onTap: (value){
             currentIndex=value;
+            _pageController.jumpToPage(currentIndex);
             setState(() {
             });
           },
@@ -37,7 +39,15 @@ class _IndexPageState extends State<IndexPage> {
           
           ),
       ),
-      body: page[currentIndex],
+      // body: IndexedStack(  //显示第index个页面，保持页面状态的方法之一，
+      //   index: currentIndex,
+      //   children: page
+      // ),
+      body: PageView(
+        controller: _pageController,
+        children: page,
+        // physics: NeverScrollableScrollPhysics(),
+      ),
     );
   }
   
