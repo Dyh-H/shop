@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:shop/configs/service_url.dart';
 import '../service/service_method.dart';
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,10 +17,21 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
+  List<Map> dataList;
+
+  @override
+  void initState(){
+    super.initState();
+    getHomePage(servicePath["homePageBelowConten"]).then((val){
+      var a=json.decode(val);
+      dataList=(a["data"] as List).cast();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getHomePageContent(),
+        future: getHomePage(servicePath["homePageContext"],formData: {'lon': '115.02932', 'lat': '35.76189'}),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = json.decode(snapshot.data.toString());
@@ -41,20 +54,26 @@ class _HomePageState extends State<HomePage>
                 (data['data']['floor2'] as List).cast(); //楼层1商品和图片
             List<Map> floor3 =
                 (data['data']['floor3'] as List).cast(); //楼层1商品和图片
-            return ListView(
-              children: <Widget>[
-                SwiperDiy(swiperDataList: swiperDataList,),
-                TopNavigator(navigatorList: navigatorList,),
-                ADbanner(url: url,),
-                LaunchURL(Imageurl: leaderImage,Tel: leaderPhone,),
-                Recommand(recommendList: recommendList,),
-                FloorTitle(picture_address: floor1Title),
-                FloorContent(floorGoodsList: floor1),
-                FloorTitle(picture_address: floor2Title),
-                FloorContent(floorGoodsList: floor2),
-                FloorTitle(picture_address: floor3Title),
-                FloorContent(floorGoodsList: floor3),
-              ],
+            return EasyRefresh(
+              child: ListView(
+                children: <Widget>[
+                  SwiperDiy(swiperDataList: swiperDataList,),
+                  TopNavigator(navigatorList: navigatorList,),
+                  ADbanner(url: url,),
+                  LaunchURL(Imageurl: leaderImage,Tel: leaderPhone,),
+                  Recommand(recommendList: recommendList,),
+                  FloorTitle(picture_address: floor1Title),
+                  FloorContent(floorGoodsList: floor1),
+                  FloorTitle(picture_address: floor2Title),
+                  FloorContent(floorGoodsList: floor2),
+                  FloorTitle(picture_address: floor3Title),
+                  FloorContent(floorGoodsList: floor3),
+                  Hot(dataList: dataList,),
+                ],
+              ),
+              onLoad: (){
+                print("加载更多");
+              },
             );
           } else {
             return Center(
@@ -304,6 +323,76 @@ class FloorContent extends StatelessWidget {
         },
         child: Image.network(goods['image']),
       ),
+    );
+  }
+}
+
+//火爆区域编写
+class Hot extends StatefulWidget {
+  final List<Map> dataList;
+
+  Hot({Key key, this.dataList}) : super(key: key);
+  
+  @override
+  _HotState createState() => _HotState();
+}
+
+class _HotState extends State<Hot> {
+  
+  @override
+  Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: false);
+    return Column(
+      children: <Widget>[
+        HotTitle(),
+        HotContent()
+      ],
+    );
+  }
+
+  Widget HotTitle(){
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: Text("火爆专区",style: TextStyle(fontSize: 16),),
+    );
+  }
+  Widget HotContent(){
+    return Container(
+      child: Wrap(
+         spacing: 9.0,
+         runSpacing: 12.0,
+        alignment: WrapAlignment.center,
+        children: widget.dataList.map((item){
+          return _Item(item["name"], item["image"], item["price"],item["mallPrice"]);
+        }).toList()
+      ),
+    );
+  }
+  Widget _Item(name,url,price,mallprice){
+    return Container(
+      decoration: BoxDecoration(
+        color:Colors.white,
+      ),
+      width: ScreenUtil().setWidth(350),
+     child: Column(
+       children: <Widget>[
+         Image.network(url),
+         Container(
+           padding: EdgeInsets.all(1.0),
+           child: Text(name),
+         ),
+         Container(
+           padding: EdgeInsets.fromLTRB(0, 3.0, 0.0, 10.0),
+           child: Row(
+             mainAxisAlignment: MainAxisAlignment.spaceAround,
+             children: <Widget>[
+               Text(price.toString()),
+               Text(mallprice.toString()),
+             ],
+           ),
+         )
+       ],
+     ), 
     );
   }
 }

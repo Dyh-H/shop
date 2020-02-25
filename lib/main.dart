@@ -1,5 +1,6 @@
 //入口文件
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import './pages/index_page.dart';
 
@@ -20,3 +21,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
