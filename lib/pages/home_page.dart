@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:shop/configs/service_url.dart';
@@ -14,6 +15,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  int i=2;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -71,9 +74,29 @@ class _HomePageState extends State<HomePage>
                   Hot(dataList: dataList,),
                 ],
               ),
-              onLoad: (){
-                print("加载更多");
+              onRefresh: null,
+              topBouncing: false,
+              onLoad: ()async{
+                print("开始加载...第${i}页");
+                var formdata={"page":i};
+                await getHomePage(servicePath["homePageBelowConten"],formData: formdata).then((val){
+                  var b=json.decode(val.toString());
+                  List<Map> newList=(b["data"] as List).cast();
+                  setState(() {
+                    dataList.addAll(newList);
+                    i++;
+                  });
+                });
               },
+              footer: ClassicalFooter(
+                enableInfiniteLoad: false,  //是否无限自动加载
+                completeDuration: Duration(seconds: 10),  //完成延迟
+                float: true,
+                loadReadyText: "释放加载...",
+                loadedText: "加载完成...",
+                loadingText: "正在加载...",
+                loadText: "取消加载.."
+              ),
             );
           } else {
             return Center(

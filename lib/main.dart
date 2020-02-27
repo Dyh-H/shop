@@ -1,8 +1,10 @@
 //入口文件
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import './pages/index_page.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:shop/example/nested_scroll_view.dart';
+import 'package:shop/pages/index_page.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -16,11 +18,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.pink
         ),
-        home: IndexPage(),
+        home: NestedScrollViewPage(),
       ),
     );
   }
-}
-
-
+}   
 

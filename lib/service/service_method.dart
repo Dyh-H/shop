@@ -7,7 +7,6 @@ Future getHomePage(url,{formData}) async{
     Response response;
     Dio dio=new Dio();
     dio.options.contentType="application/x-www-form-urlencoded";
-    var formData = {'lon': '115.02932', 'lat': '35.76189'};
     if (formData==null) {
       response=await dio.post(url);
     } else {
